@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
 import requests  # For calling other services
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Allows all origins for local testing
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -38,7 +40,7 @@ def create_todo():
 
     # Trigger Notification service (placeholder; update URL in Step 4)
     try:
-        requests.post('http://localhost:5000/notify', json={'task': data['task']})
+        requests.post('http://localhost:5098/notify', json={'task': data['task']})
     except requests.exceptions.RequestException as e:
         # Log error but don't fail the todo creation
         print(f"Notification failed: {e}")

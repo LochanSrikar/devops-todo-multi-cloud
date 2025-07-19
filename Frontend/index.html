@@ -21,31 +21,41 @@
     <ul id="todo-list" class="list-group"></ul>
 
     <script>
-        async function loadTodos() {
-            const response = await fetch('http://localhost:3000/todos');
-            const todos = await response.json();
-            const list = document.getElementById('todo-list');
-            list.innerHTML = '';
-            todos.forEach(todo => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item';
-                li.textContent = `${todo.task} (User: ${todo.user_id})`;
-                list.appendChild(li);
-            });
-        }
+     async function loadTodos() {
+    try {
+        const response = await fetch('http://localhost:3000/todos');
+        if (!response.ok) throw new Error('Error loading tasks');
+        const todos = await response.json();
+        const list = document.getElementById('todo-list');
+        list.innerHTML = '';
+        todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.textContent = `${todo.task} (User: ${todo.user_id})`;
+            list.appendChild(li);
+        });
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
 
-        async function addTodo() {
-            const task = document.getElementById('task').value;
-            const token = document.getElementById('token').value;
-            await fetch('http://localhost:3000/todos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ task, token })
-            });
-            loadTodos();  // Reload list
-        }
+async function addTodo() {
+    const task = document.getElementById('task').value;
+    const token = document.getElementById('token').value;
+    try {
+        const response = await fetch('http://localhost:3000/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task, token })
+        });
+        if (!response.ok) throw new Error('Error adding task');
+        alert('Task added and notified!');  // Notification feedback
+        loadTodos();  // Auto-update list
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
 
-        loadTodos();  // Load on start
+loadTodos();  // Load on start
     </script>
     </body>
 </body>
