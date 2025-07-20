@@ -1,0 +1,34 @@
+# Notification Microservice (.NET with ASP.NET Core)
+
+This is the Notification microservice for event-driven alerts in the Todo app. It receives task data from Todo and "sends" notifications (simulated with console log; can extend to email). Built with ASP.NET Core for fast API.
+
+## Setup
+- Make sure you have .NET 8.0 SDK installed for development.
+- The service runs on port 5098 (or as shown in run logs).
+- Test endpoint: POST http://localhost:5098/notify with body like {"task": "Test"} (returns "Notified").
+
+## Docker Commands to Run the Container
+
+These commands containerize and run the Notification service. Run them in the `services/notification-dotnet/NotificationService` folder.
+
+| Order | Command | Description | Why Needed | Example Usage |
+|-------|---------|-------------|------------|--------------|
+| 1 | `dotnet publish -c Release -o out` | Publishes the .NET app to an "out" folder for optimized files. | Prepares the app package (DLLs) for the container—makes it ready to run without full SDK. Significance: Optimizes for production; keeps container light. | Run in `NotificationService` folder. |
+| 2 | `docker build -t notification-service .` | Builds the container image from the Dockerfile. | Creates the "box" with your .NET app and runtime—first step to containerize. Significance: Makes the app portable; run it anywhere with Docker. | Run after publish. |
+| 3 | `docker run -d -p 5098:80 notification-service` | Runs the container in background, mapping port 80 inside to 5098 on PC. | "Opens" the box to start the app and access it. Significance: Tests if the container works like local; -d keeps terminal free. | Run after build; adjust port if needed; stop with `docker stop <ID>`. |
+| 4 | `docker ps` | Lists running containers. | Checks what's active. Significance: Debug if your app is up. | Run anytime. |
+| 5 | `docker ps -a` | Lists all containers (running or stopped). | Sees stopped ones too. Significance: Find old containers for logs. | Use if `docker ps` is empty. |
+| 6 | `docker logs <CONTAINER ID>` | Shows logs from a container (get ID from `docker ps -a`). | "Peeks inside" for errors or alerts. Significance: Debugging tool. | e.g., `docker logs 511e31e9ca25`. |
+| 7 | `docker stop <CONTAINER ID>` | Stops a running container. | "Puts the toy away"—frees resources. Significance: Clean up to avoid conflicts. | e.g., `docker stop 511e31e9ca25`. |
+| 8 | `docker images` | Lists built images. | Sees your "blueprints." Significance: Verify builds. | Run after build.
+
+## How to Run Locally (Without Docker)
+- `dotnet restore` (install dependencies).
+- `dotnet build` (compile).
+- `dotnet run` (start on port 5098 or as shown).
+- Test: Use PowerShell for POST as in the project guide.
+
+## Notes
+- The Dockerfile uses .NET runtime for a small size.
+- Integrate with Todo: Run this service, then Todo calls it on task add (update port in app.py if needed).
+- For full app: Run with Todo and User containers for end-to-end testing.
