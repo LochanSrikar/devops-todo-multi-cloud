@@ -1,0 +1,31 @@
+# User Microservice (Java with Spring Boot)
+
+This is the User microservice for authentication in the Todo app. It verifies tokens and returns user details (e.g., user_id) for the Todo service to use. Built with Spring Boot and H2 DB for local testing.
+
+## Setup
+- Make sure you have Java 21 and Maven installed locally for building.
+- The service runs on port 8080.
+- Test endpoint: http://localhost:8080/api/users/verify?token=test (returns user JSON if found).
+
+## Docker Commands to Run the Container
+
+These commands containerize and run the User service. Run them in the `services/user-java` folder.
+
+| Order | Command | Description | Why Needed | Example Usage |
+|-------|---------|-------------|------------|--------------|
+| 1 | `docker build -t user-service .` | Builds the container image from the Dockerfile. | Creates the "box" with your Java app and dependencies—first step to containerize. Significance: Makes the app portable; run it anywhere with Docker. | Run in `services/user-java` folder. |
+| 2 | `docker run -d -p 8080:8080 user-service` | Runs the container in background, mapping port 8080 inside to outside. | "Opens" the box to start the app and access it (e.g., via browser). Significance: Tests if the container works like local; -d keeps terminal free. | Run after build; stop with `docker stop <ID>`. |
+| 3 | `docker ps` | Lists running containers. | Checks what's active. Significance: Debug if your app is up. | Run anytime. |
+| 4 | `docker ps -a` | Lists all containers (running or stopped). | Sees stopped ones too. Significance: Find old containers for logs. | Use if `docker ps` is empty. |
+| 5 | `docker logs <CONTAINER ID>` | Shows logs from a container (get ID from `docker ps -a`). | "Peeks inside" for errors. Significance: Debugging tool. | e.g., `docker logs f7ff46002269`. |
+| 6 | `docker stop <CONTAINER ID>` | Stops a running container. | "Puts the toy away"—frees resources. Significance: Clean up to avoid conflicts. | e.g., `docker stop f7ff46002269`. |
+| 7 | `docker images` | Lists built images. | Sees your "blueprints." Significance: Verify builds. | Run after build.
+
+## How to Run Locally (Without Docker)
+- `mvn clean install` (build).
+- `mvn spring-boot:run` (start on port 8080).
+- Test: http://localhost:8080/api/users/verify?token=test.
+
+## Notes
+- The Dockerfile uses multi-stage build for a small image.
+- Integrate with Todo: Run this service, then Todo calls it for auth.
