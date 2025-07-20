@@ -1,0 +1,26 @@
+# Todo Python Service
+
+This is the Todo microservice in Python with Flask.
+
+## Docker Commands to Run the Container
+
+1. Build the image:
+   docker build -t todo-service .
+
+2. Run the container:
+   docker run -p 3000:3000 todo-service
+
+3. Check running containers:
+   docker ps
+
+4. Check all containers:
+   docker ps -a
+
+5. See logs:
+   docker logs <CONTAINER ID>
+
+6. Stop a container:
+   docker stop <CONTAINER ID>
+
+7. List images:
+   docker images

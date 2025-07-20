@@ -27,7 +27,7 @@ def create_todo():
     data = request.get_json()
     # Real call to User service (assume it's running on localhost:8080)
     try:
-        user_response = requests.get('http://localhost:8080/api/users/verify', params={'token': data.get('token', 'test')})
+        user_response = requests.get('http://host.docker.internal:8080/api/users/verify', params={'token': data.get('token', 'test')})
         if user_response.status_code != 200:
             return jsonify({'error': 'Unauthorized'}), 401
         user_data = user_response.json()
